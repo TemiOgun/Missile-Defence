@@ -117,10 +117,12 @@ void State::fireMissile( int siloIndex, float x, float y )
 
     silos[siloIndex].decrMissiles();
 
+     vector siloPos = silos[siloIndex].position();
+
     // CHANGE THIS
 
     missilesOut.add( Missile( silos[siloIndex].position(),   // source
-			      speed * vector(randIn01(),randIn01(),0), // velocity
+			      speed * vector(x-siloPos.x,y-siloPos.y,0), // velocity
 			      y,                             // destination y
 			      
 			      vector( 1,1,0 ) ) );           // colour

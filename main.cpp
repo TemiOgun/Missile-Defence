@@ -56,16 +56,41 @@ void mouseClick( int button, int buttonState, int x, int y )
 
 {
   if (buttonState == GLUT_DOWN) {
+	
+	//convert position of mouse to world state
+	
+	GLint viewport[4];     // Where The Viewport Values Will Be Stored
+	glGetIntegerv(GL_VIEWPORT, viewport);  // Retrieves The Viewport Values (X, Y, Width, Height)
+	GLdouble modelview[16];      // Where The 16 Doubles Of The Modelview Matrix Are To Be Stored
+glGetDoublev(GL_MODELVIEW_MATRIX, modelview);       // Retrieve The Modelview Matrix
+	GLdouble projection[16];   // Where The 16 Doubles Of The Projection Matrix Are To Be Stored
+glGetDoublev(GL_PROJECTION_MATRIX, projection);     // Retrieve The Projection Matrix
+	GLfloat winX, winY;
+	winX = x;  //window x position
+	winY = y;  //window y position
+	winY = (float)viewport[3] - winY;
+	
+	GLdouble wx, wy, wz;
+	gluUnProject( winX, winY, 0, modelview, projection, viewport, &wx, &wy, &wz);
 
     // Calculate the world coordinates of mouse (x,y)
 
-    float wx = ((float)x/(float)WINDOW_WIDTH)*1.04 - 0.5;
-    float wy = -((float)y/(float)WINDOW_HEIGHT)*1.04 + 0.5;
+  
 
 std::cout << "Mouse Position x = " <<x << " " <<wx<< " Mouse position y="  << y<<" " <<wy<<std::endl;
     // Shoot from silo 0, 1, or 2
 
-    switch (button) {
+	if(wx<=0.33){
+	state->fireMissile(0,wx,wy);
+	}   
+	else if(wx>0.33 && wx <=0.66){
+	state->fireMissile(1, wx, wy);
+	}
+	else if(wx>0.66){
+	state->fireMissile(2, wx, wy);
+	}
+/*
+ switch (button) {
 
     case GLUT_LEFT_BUTTON:
       state->fireMissile( 0, wx, wy );
@@ -79,6 +104,7 @@ std::cout << "Mouse Position x = " <<x << " " <<wx<< " Mouse position y="  << y<
       state->fireMissile( 2, wx, wy );
       break;
     }
+	*/
   }
 
   glutPostRedisplay();
