@@ -27,6 +27,7 @@ class State {
   void draw();
   void fireMissile( int siloIndex,float x, float y );
   void updateState( float deltaT );
+  void explosion(vector position);
 
  private:
 

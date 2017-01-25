@@ -29,7 +29,14 @@ void State::draw()
   for (i=0; i<explosions.size(); i++)
     explosions[i].draw();
 }
-
+//explosion graphics
+void State::explosion(vector position){
+  explosions.add( Circle( position,//current position
+			     0.2, // Speed
+			     0.05,//radius
+			     vector(1,0,0) ) );// color
+      
+}
 
 // Update the state of the world after some time interval, deltaT
 //
@@ -48,7 +55,7 @@ void State::updateState( float deltaT )
   // Generate some new missiles.  The rate of missle generation
   // should increase with time.
 
-  if (randIn01() < 0.01) {	// New missile with probability 10%
+  if (randIn01() < (0.0085 + currentTime/10000)) {	// New missile with a probability that increases with time
 
     missilesIn.add( Missile( vector( randIn01(), worldTop, 0), // source
 			     vector( -0.02, -0.1, 0 ),   // velocity
@@ -59,21 +66,14 @@ void State::updateState( float deltaT )
   // Look for terminating missiles
   for (i=0; i<missilesIn.size(); i++)
   if (missilesIn[i].hasReachedDestination()) {
-      explosions.add( Circle( missilesIn[i].position(),//current position
-			     0.2, // Speed
-			     0.07,//radius
-			     vector(1,0,0) ) );// color
-      missilesIn.remove(i);
+      explosion(missilesIn[i].position());
+     missilesIn.remove(i);
       i--;
     }
 
   for (i=0; i<missilesOut.size(); i++)
     if (missilesOut[i].hasReachedDestination()) {
-       explosions.add( Circle( missilesOut[i].position(),//current position
-			     0.2, // Speed
-			     0.07,//radius
-			     vector(1,0,0) ) );// color
-      
+     explosion(missilesOut[i].position());
       missilesOut.remove(i);
       i--;
     }
@@ -96,7 +96,6 @@ void State::updateState( float deltaT )
 
   for (i=0; i<missilesIn.size(); i++){
     missilesIn[i].move( deltaT );
-    // std::cout<< "Position of missile"<< i<<"equals =" << missilesIn[0].position() << std::endl;
   }
   for (i=0; i<missilesOut.size(); i++)
     missilesOut[i].move( deltaT );
@@ -111,7 +110,7 @@ void State::updateState( float deltaT )
 void State::fireMissile( int siloIndex, float x, float y )
 
 {
-  const float speed = 0.3;
+  const float speed = 0.5;
     
   if (silos[siloIndex].canShoot()) {
 
