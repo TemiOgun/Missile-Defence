@@ -31,7 +31,17 @@ class City : public Building {
     glEnd();
   }
 
-  bool isHit( vector missilePos, float radius ); 
+  bool isHit( vector missilePos, float radius ){
+    float dx = pos.x - missilePos.x;
+    float dy = pos.y - missilePos.y;
+    
+    float distance = sqrt(dx*dx + dy*dy);
+
+    if(distance < radius){
+     return true;
+     }
+    else{return false;}
+  } 
 };
   
 

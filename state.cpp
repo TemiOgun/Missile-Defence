@@ -38,6 +38,24 @@ void State::explosion(vector position){
       
 }
 
+//collision dection
+bool State::collision(Missile m, Circle c){
+     vector posC = c.position();
+     vector posM = m.position();
+
+     float dx = posC.x - posM.x;
+     float dy = posC.y - posM.y;
+    
+     float distance = sqrt(dx*dx + dy*dy);
+
+    if(distance < c.radius()){
+     return true;
+     }
+    else{return false;}
+
+}
+
+
 // Update the state of the world after some time interval, deltaT
 //
 // CHANGE ALL OF THIS FUNCTION
@@ -54,8 +72,8 @@ void State::updateState( float deltaT )
 
   // Generate some new missiles.  The rate of missle generation
   // should increase with time.
-
-  if (randIn01() < (0.0085 + currentTime/10000)) {	// New missile with a probability that increases with time
+std::cout<< currentTime/2000 << std::endl;
+  if (randIn01() < (0.0085 + currentTime/5000)) {	// New missile with a probability that increases with time
 
     missilesIn.add( Missile( vector( randIn01(), worldTop, 0), // source
 			     vector( -0.02, -0.1, 0 ),   // velocity
@@ -89,7 +107,15 @@ void State::updateState( float deltaT )
 
   // Look for incoming missiles that hit an explosion and are
   // destroyed
-
+  for(i=0;i<missilesIn.size();i++){
+     for(int i = 0; i < explosions.size(); i ++){
+	if(collision(missilesIn[i],explosions[i])){
+	explosion(missilesIn[i].position());
+      	missilesIn.remove(i);
+      	i--;
+	}
+     }
+  }
      // ADD CODE HERE
 
   // Update all the moving objects
@@ -110,7 +136,7 @@ void State::updateState( float deltaT )
 void State::fireMissile( int siloIndex, float x, float y )
 
 {
-  const float speed = 0.5;
+  const float speed = 0.9;
     
   if (silos[siloIndex].canShoot()) {
 

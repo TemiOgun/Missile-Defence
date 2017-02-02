@@ -48,6 +48,10 @@ class Circle {
     return maxR;
   }
 
+  vector position(){
+   return pos;
+  }
+
  private:
 
   vector pos;			// centre
