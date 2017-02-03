@@ -38,7 +38,7 @@ void State::explosion(vector position){
       
 }
 
-//collision dection
+//collision dection for missiles
 bool State::collision(Missile m, Circle c){
      vector posC = c.position();
      vector posM = m.position();
@@ -49,6 +49,22 @@ bool State::collision(Missile m, Circle c){
      float distance = sqrt(dx*dx + dy*dy);
 
     if(distance < c.radius()){
+     return true;
+     }
+    else{return false;}
+
+}
+
+//collision dection for missiles
+bool State::collision(Missile m, vector p){
+     vector M = m.position();
+
+     float dx = M.x - p.x;
+     float dy = M.y - p.y;
+    
+     float distance = sqrt(dx*dx + dy*dy);
+
+    if((M.x>p.x - 0.04) && (M.x <p.x + 0.04) && (M.y<p.y + 0.03)){
      return true;
      }
     else{return false;}
@@ -72,7 +88,6 @@ void State::updateState( float deltaT )
 
   // Generate some new missiles.  The rate of missle generation
   // should increase with time.
-std::cout<< currentTime/2000 << std::endl;
   if (randIn01() < (0.0085 + currentTime/5000)) {	// New missile with a probability that increases with time
 
     missilesIn.add( Missile( vector( randIn01(), worldTop, 0), // source
@@ -100,7 +115,6 @@ std::cout<< currentTime/2000 << std::endl;
 
   for (i=0; i<explosions.size(); i++)
     if (explosions[i].radius() >= explosions[i].maxRadius()) {
-      // CHANGE THIS: CHECK FOR DESTROYED CITY OR SILO
       explosions.remove(i);
       i--;
     }
@@ -108,15 +122,44 @@ std::cout<< currentTime/2000 << std::endl;
   // Look for incoming missiles that hit an explosion and are
   // destroyed
   for(i=0;i<missilesIn.size();i++){
-     for(int i = 0; i < explosions.size(); i ++){
-	if(collision(missilesIn[i],explosions[i])){
+     for(int j = 0; j < explosions.size(); j ++){
+	if(collision(missilesIn[i],explosions[j])){
 	explosion(missilesIn[i].position());
       	missilesIn.remove(i);
       	i--;
+	explosions.remove(j);
+        j--;
+	break;
 	}
      }
   }
-     // ADD CODE HERE
+
+ for(i=0;i<missilesIn.size();i++){
+     for(int j = 0; j < cities.size(); j ++){
+	if(collision(missilesIn[i],cities[j].position())){
+	explosion(missilesIn[i].position());
+      	missilesIn.remove(i);
+      	i--;
+	cities.remove(j);
+        j--;
+	break;
+	}
+     }
+  }
+
+ for(i=0;i<missilesIn.size();i++){
+     for(int j = 0; j < silos.size(); j ++){
+	if(collision(missilesIn[i],silos[j].position())){
+	explosion(missilesIn[i].position());
+      	missilesIn.remove(i);
+      	i--;
+	silos.remove(j);
+        j--;
+	break;
+	}
+     }
+  }
+
 
   // Update all the moving objects
 
@@ -143,8 +186,6 @@ void State::fireMissile( int siloIndex, float x, float y )
     silos[siloIndex].decrMissiles();
 
      vector siloPos = silos[siloIndex].position();
-
-    // CHANGE THIS
 
     missilesOut.add( Missile( silos[siloIndex].position(),   // source
 			      speed * vector(x-siloPos.x,y-siloPos.y,0), // velocity

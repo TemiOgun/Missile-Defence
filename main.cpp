@@ -77,40 +77,27 @@ glGetDoublev(GL_PROJECTION_MATRIX, projection);     // Retrieve The Projection M
 
   
 
-std::cout << "Mouse Position x = " <<x << " " <<wx<< " Mouse position y="  << y<<" " <<wy<<std::endl;
-    // Shoot from silo 0, 1, or 2
+   // Shoot from silo 0, 1, or 2
 
 	if(wx<=0.33){
 	state->fireMissile(0,wx,wy);
-	}   
+	}
+	
 	else if(wx>0.33 && wx <=0.66){
 	state->fireMissile(1, wx, wy);
 	}
+
 	else if(wx>0.66){
 	state->fireMissile(2, wx, wy);
 	}
-/*
- switch (button) {
+	
+	
 
-    case GLUT_LEFT_BUTTON:
-      state->fireMissile( 0, wx, wy );
-      break;
-
-    case GLUT_MIDDLE_BUTTON:
-      state->fireMissile( 1, wx, wy );
-      break;
-
-    case GLUT_RIGHT_BUTTON:
-      state->fireMissile( 2, wx, wy );
-      break;
-    }
-	*/
-  }
 
   glutPostRedisplay();
 }
 
-
+}
 void keyPress( unsigned char c, int x, int y )
 
 {

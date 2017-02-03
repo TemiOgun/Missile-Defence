@@ -29,6 +29,7 @@ class State {
   void updateState( float deltaT );
   void explosion(vector position);
   bool collision(Missile m, Circle c);
+  bool collision(Missile m, vector p);
 
  private:
 

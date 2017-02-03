@@ -30,6 +30,12 @@ class City : public Building {
     glVertex2f( pos.x - .04, pos.y );
     glEnd();
   }
+  
+  vector position() {
+    return pos;
+  }
+
+
 
   bool isHit( vector missilePos, float radius ){
     float dx = pos.x - missilePos.x;
